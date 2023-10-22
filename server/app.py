@@ -163,9 +163,9 @@ class JobApplicationResource(Resource):
                     "cover_letter": application.cover_letter,
                     "resume_url": application.resume_url,
                     "applied_at": application.applied_at,
-                    "company_name": application.job.company_name,
-                    "title": application.job.title,
-                    "username": application.user.username
+                    "company_name": application.job.company_name if application.job else None,
+                    "title": application.job.title if application.job else None,
+                    "username": application.user.username if application.user else None
                 }
                 for application in job_applications
             ]
@@ -183,6 +183,7 @@ class JobApplicationResource(Resource):
         return response
 
 api.add_resource(JobApplicationResource, '/job-applications')
+
 
 
 class JobApplicationByIdResource(Resource):
