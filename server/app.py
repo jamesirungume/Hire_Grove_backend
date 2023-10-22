@@ -155,22 +155,32 @@ api.add_resource(JobListByIdResource, '/SearchJob/<int:id>')
 class JobApplicationResource(Resource):
 
     def get(self):
-        job_applications = [{"id": application.id, "cover_letter": application.cover_letter,
-                             "resume_url": application.resume_url, "applied_at": application.applied_at,
-                             "company_name": application.job.company_name, "title": application.job.title,
-                             "username": application.user.username} for application in JobApplication.query.all()]
-        response = make_response(jsonify(job_applications), 200)
+        job_applications = JobApplication.query.all()
+        if job_applications:
+            job_applications_list = [
+                {
+                    "id": application.id,
+                    "cover_letter": application.cover_letter,
+                    "resume_url": application.resume_url,
+                    "applied_at": application.applied_at,
+                    "company_name": application.job.company_name,
+                    "title": application.job.title,
+                    "username": application.user.username
+                }
+                for application in job_applications
+            ]
+            response = make_response(jsonify(job_applications_list), 200)
+        else:
+            response = make_response(jsonify({"message": "No job applications found"}), 404)
         return response
 
     def post(self):
         data = request.get_json()
-        application = JobApplication(cover_letter=data['cover_letter'], resume_url=data['resume_url'],
-                                     applied_at=datetime.utcnow())
+        application = JobApplication(cover_letter=data['cover_letter'], resume_url=data['resume_url'], applied_at=datetime.utcnow())
         db.session.add(application)
         db.session.commit()
         response = make_response(application.to_dict(), 201)
         return response
-
 
 api.add_resource(JobApplicationResource, '/job-applications')
 
