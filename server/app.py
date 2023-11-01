@@ -114,7 +114,7 @@ class UserById(Resource):
 
 api.add_resource(UserById, '/user/<int:id>')
 
-@jwt_required
+
 class JobListResource(Resource):
 
     def get(self):
