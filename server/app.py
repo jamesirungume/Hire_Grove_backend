@@ -114,9 +114,10 @@ class UserById(Resource):
 
 api.add_resource(UserById, '/user/<int:id>')
 
-@jwt_required()
-class JobListResource(Resource):
 
+class JobListResource(Resource):
+    
+@jwt_required()
     def get(self):
         joblists = [{'id': job.id, 'title': job.title, 'description': job.description, 'location': job.location,
                      'company_name': job.company_name, 'datetime': job.posted_at, "image_url": job.company_image}
